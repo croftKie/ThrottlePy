@@ -2,21 +2,15 @@ from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 import os
 import redis
+from redis_state import Redis_state
 
 load_dotenv()
 
 app = FastAPI()
 
-redis_cli = redis.Redis(
-    host=os.getenv("REDIS_HOST"),
-    port=os.getenv("PORT"),
-    charset="utf-8",
-    decode_responses=True
-    )
-connection = redis_cli.ping()
+redis_state = Redis_state("localhost", 6379)
 
-redis_cli.set("test-key", 1994)
-print(redis_cli.get("test-key"))
+redis_state._test_connection()
 
 @app.middleware("http")
 async def rate_limiter(request: Request, call_next):
