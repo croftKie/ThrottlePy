@@ -3,19 +3,21 @@ from dotenv import load_dotenv
 import os
 import redis
 from redis_state import Redis_state
+from throttlepy import ThrottlePy
 
 load_dotenv()
 
 app = FastAPI()
 
-redis_state = Redis_state("localhost", 6379)
+throttle = ThrottlePy()
+throttle.state._test_connection()
 
-redis_state._test_connection()
+
 
 @app.middleware("http")
 async def rate_limiter(request: Request, call_next):
     response = await call_next(request)
-    print("hello world!")
+    print(request.client.host)
     return response
 
 @app.get("/", tags=["Root"])

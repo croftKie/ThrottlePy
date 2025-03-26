@@ -11,9 +11,20 @@ class Redis_state:
             decode_responses=True
         )
 
-
     def _test_connection(self):
         if self.redis_cli.ping():
             print("Redis Connection Active")
 
+    def set_to_state(self, name, value):
+        is_stored = self.redis_cli.set(name, value);
+        return is_stored
+    def get_from_state(self, name):
+        state_value = self.redis_cli.get(name);
+        return state_value
+    def check_in_state(self, name):
+        is_in_state = self.redis_cli.get(name)
+        if is_in_state:
+            return True
+        else:
+            return False
     
